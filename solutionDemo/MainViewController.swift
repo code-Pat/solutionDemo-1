@@ -1,4 +1,6 @@
 import UIKit
+import CoreData
+
 
 class MainViewController: UIViewController {
     
@@ -10,6 +12,7 @@ class MainViewController: UIViewController {
         
         return cv
     }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // view.addSubView(화면에 표시하고싶은 거) 아까는 클릭만 한거라면 이 코드를 쓰면 화면에 올려놓은거에요 이제 화면에 표시 됩니다.
@@ -22,13 +25,62 @@ class MainViewController: UIViewController {
         collectionView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         collectionView.backgroundColor = .yellow
         
-        
-        
-        
-        
     }
     
-
     
+    // Core Data
+    
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
+    private var models = [Shortcut]()
+    
+    func getAllItems() {
+        do {
+            models = try context.fetch(Shortcut.fetchRequest())
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+                // UI에서 사용할 때, let model = models[indexPath.row] 지정 후 model.name 과 같이 사용
+            }
+        }
+        catch {
+            //error
+        }
+    }
+    
+    func createItem(name: String) {
+        let newItem = Shortcut(context: context)
+        newItem.title = title
+        //newItem.option = String()
+        
+        do {
+            try context.save()
+            getAllItems()
+        }
+        catch {
+            
+        }
+    }
+    
+    func deleteItem(item: Shortcut) {
+        context.delete(item)
+        
+        do {
+            try context.save()
+            getAllItems()
+        }
+        catch {
+            
+        }
+    }
+    
+    func updateItem(item: Shortcut, newTitle: String) {
+        item.title = newTitle
+        do {
+            try context.save()
+        }
+        catch {
+            
+        }
+    }
 
 }
