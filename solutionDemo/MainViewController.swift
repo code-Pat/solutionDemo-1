@@ -25,6 +25,8 @@ class MainViewController: UIViewController {
         collectionView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         collectionView.backgroundColor = .yellow
         
+        getAllItems()
+        
     }
     
     
@@ -33,7 +35,8 @@ class MainViewController: UIViewController {
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     private var models = [Shortcut]()
-    
+    	
+    // get all items -> all titles in Shortcut model
     func getAllItems() {
         do {
             models = try context.fetch(Shortcut.fetchRequest())
@@ -47,6 +50,7 @@ class MainViewController: UIViewController {
         }
     }
     
+    // create an item -> title and save it to Shortcut model
     func createItem(name: String) {
         let newItem = Shortcut(context: context)
         newItem.title = title
@@ -61,6 +65,7 @@ class MainViewController: UIViewController {
         }
     }
     
+    // delete an item -> title from Shortcut model
     func deleteItem(item: Shortcut) {
         context.delete(item)
         
@@ -73,6 +78,7 @@ class MainViewController: UIViewController {
         }
     }
     
+    // get a new item -> new title and update to an original title
     func updateItem(item: Shortcut, newTitle: String) {
         item.title = newTitle
         do {
